@@ -72,16 +72,12 @@
   <script>
     function loadMockCourses() {
       const now = new Date();
-      const offsetMinutes = 5;
-      const before = new Date(now.getTime() - offsetMinutes * 60000);
-      const after = new Date(now.getTime() + offsetMinutes * 60000);
-
       const mockCourses = [
         {
           courseId: "TESTLIVE",
           name: "測試進行中課程",
-          startTime: before.toISOString(),
-          endTime: after.toISOString()
+          startTime: new Date(now.getTime() - 5 * 60000).toISOString(),
+          endTime: new Date(now.getTime() + 5 * 60000).toISOString()
         },
         {
           courseId: "A20250712",
@@ -125,8 +121,24 @@
         return;
       }
 
-      result.textContent = '✅ 簽到資料已儲存（模擬畫面，尚未串接）';
-      // 未來這裡可以改為 fetch 送出資料給 Proxy API
+      const apiUrl = 'https://script.google.com/macros/s/AKfycbzBOVB7bUUeWfwfVkooIwt3iylG1IO3R2APZRVvjyX3ZLEyu16l6lHIaVuwfRM8TazCCA/exec';
+
+      fetch(apiUrl, {
+        method: 'POST',
+        body: JSON.stringify({ name, phone, course }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          result.textContent = '✅ 資料已送出！';
+        } else {
+          result.textContent = '❌ ' + data.message;
+        }
+      })
+      .catch(err => {
+        result.textContent = '❌ 發送錯誤：' + err;
+      });
     });
   </script>
 </body>
