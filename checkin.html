@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上課簽到</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      max-width: 480px;
+      margin: auto;
+      background-color: #f2f2f2;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #aaa;
+    }
+    .result {
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>上課簽到</h1>
+  <div class="form-group">
+    <label for="name">姓名</label>
+    <input type="text" id="name" placeholder="請輸入姓名">
+  </div>
+  <div class="form-group">
+    <label for="phone">手機號碼</label>
+    <input type="tel" id="phone" placeholder="請輸入手機">
+  </div>
+  <div class="form-group">
+    <label for="courseSelect">課程代碼</label>
+    <select id="courseSelect">
+      <option value="">請選擇目前可簽到的課程</option>
+    </select>
+  </div>
+  <button id="submitBtn">送出簽到</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    function loadMockCourses() {
+      const mockCourses = [
+        {
+          courseId: "A20250710",
+          name: "AI簡報力",
+          startTime: "2025-07-10T08:50:00",
+          endTime: "2025-07-10T09:10:00"
+        },
+        {
+          courseId: "A20250712",
+          name: "AI導購訓練",
+          startTime: "2025-07-12T13:00:00",
+          endTime: "2025-07-12T13:20:00"
+        },
+        {
+          courseId: "A20250715",
+          name: "LINE商業整合工作坊",
+          startTime: "2025-07-15T19:00:00",
+          endTime: "2025-07-15T19:20:00"
+        }
+      ];
+
+      const now = new Date();
+      const select = document.getElementById('courseSelect');
+
+      mockCourses.forEach(c => {
+        const start = new Date(c.startTime);
+        const end = new Date(c.endTime);
+        const isActive = now >= start && now <= end;
+
+        const opt = document.createElement('option');
+        opt.value = c.courseId;
+        opt.textContent = `${c.name} (${c.courseId})`;
+        if (!isActive) opt.disabled = true;
+        select.appendChild(opt);
+      });
+    }
+
+    loadMockCourses();
+
+    document.getElementById('submitBtn').addEventListener('click', function () {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const course = document.getElementById('courseSelect').value;
+      const result = document.getElementById('result');
+
+      if (!name || !phone || !course) {
+        result.textContent = '請完整填寫所有欄位';
+        return;
+      }
+
+      result.textContent = '✅ 簽到資料已儲存（模擬畫面，尚未串接）';
+      // 未來這裡可以改為 fetch 送出資料給 Proxy API
+    });
+  </script>
+</body>
+</html>
