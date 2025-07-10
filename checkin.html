@@ -66,6 +66,10 @@
       <option value="">請選擇目前可簽到的課程</option>
     </select>
   </div>
+  <div class="form-group">
+    <label for="points">目前點數</label>
+    <input type="text" id="points" readonly placeholder="請輸入手機後查詢">
+  </div>
   <button id="submitBtn">送出簽到</button>
   <div class="result" id="result"></div>
 
@@ -109,6 +113,25 @@
     }
 
     loadMockCourses();
+
+    document.getElementById('phone').addEventListener('blur', async function () {
+      const phone = document.getElementById('phone').value.trim();
+      if (!phone) return;
+
+      try {
+        const res = await fetch(`https://addpoint.vercel.app/api/query?phone=${encodeURIComponent(phone)}`);
+        if (!res.ok) throw new Error('查詢錯誤');
+
+        const data = await res.json();
+        if (data.success && typeof data.points === 'number') {
+          document.getElementById('points').value = `${data.points} 點`;
+        } else {
+          document.getElementById('points').value = '尚無紀錄';
+        }
+      } catch (err) {
+        document.getElementById('points').value = '查詢失敗';
+      }
+    });
 
     document.getElementById('submitBtn').addEventListener('click', async function () {
       const name = document.getElementById('name').value.trim();
