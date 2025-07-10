@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>會員註冊</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      max-width: 480px;
+      margin: auto;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #aaa;
+    }
+    .result {
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>會員註冊</h1>
+  <div class="form-group">
+    <label for="name">姓名</label>
+    <input type="text" id="name" placeholder="請輸入姓名">
+  </div>
+  <div class="form-group">
+    <label for="phone">手機號碼</label>
+    <input type="tel" id="phone" placeholder="請輸入手機">
+  </div>
+  <div class="form-group">
+    <label for="birthday">生日</label>
+    <input type="date" id="birthday">
+  </div>
+  <button id="registerBtn">送出註冊</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    document.getElementById('registerBtn').addEventListener('click', async function () {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const birthday = document.getElementById('birthday').value;
+      const result = document.getElementById('result');
+
+      if (!name || !phone || !birthday) {
+        result.textContent = '請完整填寫所有欄位';
+        return;
+      }
+
+      try {
+        const res = await fetch('https://addpoint.vercel.app/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone, birthday })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          result.textContent = '✅ 註冊成功！';
+        } else {
+          result.textContent = '❌ 註冊失敗：' + (data.message || '未知錯誤');
+        }
+      } catch (err) {
+        result.textContent = '❌ 發送失敗：' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
