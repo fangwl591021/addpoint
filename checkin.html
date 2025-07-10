@@ -71,12 +71,17 @@
 
   <script>
     function loadMockCourses() {
+      const now = new Date();
+      const offsetMinutes = 5;
+      const before = new Date(now.getTime() - offsetMinutes * 60000);
+      const after = new Date(now.getTime() + offsetMinutes * 60000);
+
       const mockCourses = [
         {
-          courseId: "A20250710",
-          name: "AI簡報力",
-          startTime: "2025-07-10T08:50:00",
-          endTime: "2025-07-10T09:10:00"
+          courseId: "TESTLIVE",
+          name: "測試進行中課程",
+          startTime: before.toISOString(),
+          endTime: after.toISOString()
         },
         {
           courseId: "A20250712",
@@ -92,7 +97,6 @@
         }
       ];
 
-      const now = new Date();
       const select = document.getElementById('courseSelect');
 
       mockCourses.forEach(c => {
