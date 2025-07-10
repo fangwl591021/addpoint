@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // ✅ CORS 頭設定
+  // 🔓 CORS 設定
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -13,10 +13,16 @@ export default async function handler(req, res) {
   }
 
   try {
+    const { name, phone, course } = req.body || {};
+
+    if (!name || !phone || !course) {
+      return res.status(400).json({ success: false, message: '缺少必要欄位' });
+    }
+
     const gasRes = await fetch('https://script.google.com/macros/s/AKfycbzBOVB7bUUeWfwfVkooIwt3iylG1IO3R2APZRVvjyX3ZLEyu16l6lHIaVuwfRM8TazCCA/exec', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req.body)
+      body: JSON.stringify({ name, phone, course })
     });
 
     const result = await gasRes.json();
