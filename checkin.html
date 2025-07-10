@@ -71,13 +71,12 @@
 
   <script>
     function loadMockCourses() {
-      const now = new Date();
       const mockCourses = [
         {
-          courseId: "TESTLIVE",
-          name: "測試進行中課程",
-          startTime: new Date(now.getTime() - 5 * 60000).toISOString(),
-          endTime: new Date(now.getTime() + 5 * 60000).toISOString()
+          courseId: "A20250710",
+          name: "AI簡報力",
+          startTime: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+          endTime: new Date(Date.now() + 5 * 60 * 1000).toISOString()
         },
         {
           courseId: "A20250712",
@@ -93,6 +92,7 @@
         }
       ];
 
+      const now = new Date();
       const select = document.getElementById('courseSelect');
 
       mockCourses.forEach(c => {
@@ -110,7 +110,7 @@
 
     loadMockCourses();
 
-    document.getElementById('submitBtn').addEventListener('click', function () {
+    document.getElementById('submitBtn').addEventListener('click', async function () {
       const name = document.getElementById('name').value.trim();
       const phone = document.getElementById('phone').value.trim();
       const course = document.getElementById('courseSelect').value;
@@ -121,24 +121,23 @@
         return;
       }
 
-      const apiUrl = 'https://script.google.com/macros/s/AKfycbzBOVB7bUUeWfwfVkooIwt3iylG1IO3R2APZRVvjyX3ZLEyu16l6lHIaVuwfRM8TazCCA/exec';
+      try {
+        const res = await fetch('https://addpoint.vercel.app/api/checkin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone, course })
+        });
 
-      fetch(apiUrl, {
-        method: 'POST',
-        body: JSON.stringify({ name, phone, course }),
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(res => res.json())
-      .then(data => {
+        const data = await res.json();
+
         if (data.success) {
-          result.textContent = '✅ 資料已送出！';
+          result.textContent = '✅ 資料已成功送出！';
         } else {
-          result.textContent = '❌ ' + data.message;
+          result.textContent = '❌ 錯誤：' + (data.message || 'API 回傳失敗');
         }
-      })
-      .catch(err => {
-        result.textContent = '❌ 發送錯誤：' + err;
-      });
+      } catch (err) {
+        result.textContent = '❌ 發送失敗：' + err.message;
+      }
     });
   </script>
 </body>
