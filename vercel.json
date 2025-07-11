@@ -4,5 +4,17 @@
     "api/*.js": {
       "runtime": "nodejs18.x"
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/api/register",
+      "methods": ["POST"],
+      "dest": "/api/register.js"
+    },
+    {
+      "src": "/api/checkin",
+      "methods": ["POST"],
+      "dest": "/api/checkin.js"
+    }
+  ]
 }
