@@ -1,25 +1,20 @@
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ success: false, message: 'Method Not Allowed' });
+[
+  {
+    "courseId": "A20250710",
+    "name": "AI簡報力",
+    "startTime": "2025-07-10T22:10:00",
+    "endTime": "2025-07-10T22:23:00"
+  },
+  {
+    "courseId": "A20250712",
+    "name": "AI導購訓練",
+    "startTime": "2025-07-12T13:00:00",
+    "endTime": "2025-07-12T13:20:00"
+  },
+  {
+    "courseId": "A20250715",
+    "name": "LINE商業整合工作坊",
+    "startTime": "2025-07-15T19:00:00",
+    "endTime": "2025-07-15T19:20:00"
   }
-
-  const { name, phone, course } = req.body;
-  if (!name || !phone || !course) {
-    return res.status(400).json({ success: false, message: '資料不完整' });
-  }
-
-  const scriptUrl = 'https://script.google.com/macros/s/AKfycbyZtTVYfRxRBW4siOEsIX0xqSZJCbkC4ap00383E_pOUqgILvyzmqVlvzKG1-lwQxz_ZQ/exec';
-
-  try {
-    const gsRes = await fetch(scriptUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, phone, course })
-    });
-
-    const result = await gsRes.json();
-    return res.status(200).json(result);
-  } catch (err) {
-    return res.status(500).json({ success: false, message: '伺服器錯誤：' + err.message });
-  }
-}
+]
