@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // CORS 預檢請求處理
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -11,10 +10,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
 
-  const { name, phone, birthday } = req.body;
+  // ✅ 確認是否正確解析 JSON
+  const { name, phone, birthday } = req.body || {};
 
   if (!name || !phone || !birthday) {
-    return res.status(400).json({ success: false, message: '缺少必要欄位' });
+    return res.status(400).json({ success: false, message: '資料不完整' });
   }
 
   try {
