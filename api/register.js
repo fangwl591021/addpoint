@@ -1,15 +1,4 @@
 export default async function handler(req, res) {
-  // 設定 CORS Header
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // 處理 OPTIONS 預檢請求（preflight）
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  // 只允許 POST
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
@@ -17,10 +6,19 @@ export default async function handler(req, res) {
   const { name, phone, birthday } = req.body;
 
   if (!name || !phone || !birthday) {
-    return res.status(400).json({ success: false, message: '請填寫所有欄位' });
+    return res.status(400).json({ success: false, message: '缺少必要欄位' });
   }
 
-  // TODO: 可加上寫入 Google Sheets 等邏輯
+  try {
+    const response = await fetch('https://script.google.com/macros/s/AKfycbzBOVB7bUUeWfwfVkooIwt3iylG1IO3R2APZRVvjyX3ZLEyu16l6lHIaVuwfRM8TazCCA/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone, birthday })
+    });
 
-  return res.status(200).json({ success: true, message: '註冊成功' });
+    const data = await response.json();
+    return res.status(200).json(data);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: '伺服器錯誤: ' + err.message });
+  }
 }
