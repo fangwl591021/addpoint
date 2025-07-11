@@ -33,6 +33,8 @@
         });
 
         const data = await res.json();
+        console.log('伺服器回應:', data); // ← 可觀察內容
+
         if (data.success) {
           result.textContent = '✅ 註冊成功！';
         } else {
