@@ -1,168 +1,40 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>上課簽到</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 2rem;
-      max-width: 480px;
-      margin: auto;
-      background-color: #f2f2f2;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    label {
-      display: block;
-      margin-bottom: 0.25rem;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      width: 100%;
-      padding: 0.75rem;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    button:disabled {
-      background-color: #aaa;
-    }
-    .result {
-      margin-top: 1rem;
-      text-align: center;
-      font-weight: bold;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>課程簽到</title>
 </head>
 <body>
-  <h1>上課簽到</h1>
-  <div class="form-group">
-    <label for="name">姓名</label>
-    <input type="text" id="name" placeholder="請輸入姓名">
-  </div>
-  <div class="form-group">
-    <label for="phone">手機號碼</label>
-    <input type="tel" id="phone" placeholder="請輸入手機">
-  </div>
-  <div class="form-group">
-    <label for="courseSelect">課程代碼</label>
-    <select id="courseSelect">
-      <option value="">請選擇目前可簽到的課程</option>
-    </select>
-  </div>
-  <div class="form-group">
-    <label for="points">目前點數</label>
-    <input type="text" id="points" readonly placeholder="請輸入手機後查詢">
-  </div>
-  <button id="submitBtn">送出簽到</button>
-  <div class="result" id="result"></div>
+  <h1>課程簽到</h1>
+  <input type="text" id="name" placeholder="姓名"><br>
+  <input type="tel" id="phone" placeholder="手機"><br>
+  <input type="text" id="course" placeholder="課程代碼"><br>
+  <button id="submitBtn">簽到</button>
+  <div id="result"></div>
 
   <script>
-    function loadMockCourses() {
-      const mockCourses = [
-        {
-          courseId: "A20250710",
-          name: "AI簡報力",
-          startTime: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-          endTime: new Date(Date.now() + 5 * 60 * 1000).toISOString()
-        },
-        {
-          courseId: "A20250712",
-          name: "AI導購訓練",
-          startTime: "2025-07-12T13:00:00",
-          endTime: "2025-07-12T13:20:00"
-        },
-        {
-          courseId: "A20250715",
-          name: "LINE商業整合工作坊",
-          startTime: "2025-07-15T19:00:00",
-          endTime: "2025-07-15T19:20:00"
-        }
-      ];
-
-      const now = new Date();
-      const select = document.getElementById('courseSelect');
-
-      mockCourses.forEach(c => {
-        const start = new Date(c.startTime);
-        const end = new Date(c.endTime);
-        const isActive = now >= start && now <= end;
-
-        const opt = document.createElement('option');
-        opt.value = c.courseId;
-        opt.textContent = `${c.name} (${c.courseId})`;
-        if (!isActive) opt.disabled = true;
-        select.appendChild(opt);
-      });
-    }
-
-    loadMockCourses();
-
-    document.getElementById('phone').addEventListener('blur', async function () {
-      const phone = document.getElementById('phone').value.trim();
-      if (!phone) return;
-
-      try {
-        const res = await fetch(`https://addpoint.vercel.app/api/query?phone=${encodeURIComponent(phone)}`);
-        if (!res.ok) throw new Error('查詢錯誤');
-
-        const data = await res.json();
-        if (data.success && typeof data.points === 'number') {
-          document.getElementById('points').value = `${data.points} 點`;
-        } else {
-          document.getElementById('points').value = '尚無紀錄';
-        }
-      } catch (err) {
-        document.getElementById('points').value = '查詢失敗';
-      }
-    });
-
-    document.getElementById('submitBtn').addEventListener('click', async function () {
+    document.getElementById('submitBtn').addEventListener('click', async () => {
       const name = document.getElementById('name').value.trim();
       const phone = document.getElementById('phone').value.trim();
-      const course = document.getElementById('courseSelect').value;
+      const course = document.getElementById('course').value.trim();
       const result = document.getElementById('result');
 
       if (!name || !phone || !course) {
-        result.textContent = '請完整填寫所有欄位';
+        result.textContent = '❌ 請完整填寫所有欄位';
         return;
       }
 
       try {
-        const res = await fetch('https://addpoint.vercel.app/api/checkin', {
+        const res = await fetch('https://script.google.com/macros/s/AKfycbyn6FZCXz0l-taJAN3o2LVE562PMuZquC3YXeFA7ye3JHrGGRVG8lkZT4ikFGa8tUjkSw/exec', {
           method: 'POST',
-          mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, phone, course })
         });
-
-        if (!res.ok) throw new Error('伺服器錯誤 (' + res.status + ')');
-
         const data = await res.json();
-
-        if (data.success) {
-          result.textContent = '✅ 資料已成功送出！';
-        } else {
-          result.textContent = '❌ 錯誤：' + (data.message || 'API 回傳失敗');
-        }
+        result.textContent = data.success ? '✅ ' + data.message : '❌ ' + data.message;
       } catch (err) {
-        result.textContent = '❌ 發送失敗：' + err.message;
+        result.textContent = '❌ 發送錯誤：' + err.message;
       }
     });
   </script>
