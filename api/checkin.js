@@ -1,34 +1,25 @@
 export default async function handler(req, res) {
-  // ✅ 設定 CORS 頭
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-
-  // ✅ 處理預檢請求
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  // ✅ 限定僅接受 POST
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
 
+  const { name, phone, course } = req.body;
+  if (!name || !phone || !course) {
+    return res.status(400).json({ success: false, message: '資料不完整' });
+  }
+
+  const scriptUrl = 'https://script.google.com/macros/s/AKfycbwy8JNfY8OxirUY3VnauHqxsBa5sViD7Cz-Axrtmoc5bINj5A_8oieRvD-CwR-yZv90/exec';
+
   try {
-    // ✅ 轉送到你的 Google Apps Script Web App
-    const gasRes = await fetch('https://script.google.com/macros/s/AKfycbzhsfweR4dFHjtbPJHj1QVHnhMBkp_YPR4cmBJrb9Dn8JltP9EVAPsEEDhs_VbfHf8PCg/exec', {
+    const gsRes = await fetch(scriptUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req.body)
+      body: JSON.stringify({ name, phone, course })
     });
 
-    const result = await gasRes.json();
+    const result = await gsRes.json();
     return res.status(200).json(result);
   } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: '轉送 GAS 失敗',
-      error: err.message
-    });
+    return res.status(500).json({ success: false, message: '伺服器錯誤：' + err.message });
   }
 }
