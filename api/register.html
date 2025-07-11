@@ -12,37 +12,21 @@
       margin: auto;
       background-color: #f2f2f2;
     }
-    h1 {
-      text-align: center;
-    }
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 0.5rem;
-    }
+    h1 { text-align: center; margin-bottom: 1.5rem; }
+    .form-group { margin-bottom: 1rem; }
+    label { display: block; margin-bottom: 0.25rem; font-weight: bold; }
     input {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 5px;
+      width: 100%; padding: 0.5rem; border-radius: 5px;
       border: 1px solid #ccc;
     }
     button {
-      width: 100%;
-      padding: 0.75rem;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
+      width: 100%; padding: 0.75rem;
+      background-color: #28a745; color: white;
+      border: none; border-radius: 5px; font-size: 1rem;
       cursor: pointer;
     }
     .result {
-      margin-top: 1rem;
-      text-align: center;
-      font-weight: bold;
+      margin-top: 1rem; text-align: center; font-weight: bold;
     }
   </style>
 </head>
@@ -50,11 +34,11 @@
   <h1>會員註冊</h1>
   <div class="form-group">
     <label for="name">姓名</label>
-    <input type="text" id="name" placeholder="請輸入姓名" />
+    <input type="text" id="name" placeholder="請輸入姓名">
   </div>
   <div class="form-group">
     <label for="phone">手機號碼</label>
-    <input type="tel" id="phone" placeholder="請輸入手機號碼" />
+    <input type="tel" id="phone" placeholder="請輸入手機">
   </div>
   <button id="registerBtn">送出註冊</button>
   <div class="result" id="result"></div>
@@ -66,25 +50,25 @@
       const result = document.getElementById('result');
 
       if (!name || !phone) {
-        result.textContent = '⚠️ 請完整填寫姓名與手機號碼';
+        result.textContent = '❌ 請完整填寫所有欄位';
         return;
       }
 
       try {
-        const res = await fetch("https://addpoint.vercel.app/api/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const res = await fetch('https://addpoint.vercel.app/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, phone })
         });
 
         const data = await res.json();
         if (data.success) {
-          result.textContent = "✅ 註冊成功！";
+          result.textContent = '✅ 註冊成功';
         } else {
-          result.textContent = "❌ 註冊失敗：" + (data.message || "未知錯誤");
+          result.textContent = '❌ 註冊失敗：' + (data.message || '未知錯誤');
         }
       } catch (err) {
-        result.textContent = "❌ 發送失敗：" + err.message;
+        result.textContent = '❌ 發送失敗：' + err.message;
       }
     });
   </script>
