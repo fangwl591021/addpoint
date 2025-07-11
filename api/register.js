@@ -1,32 +1,28 @@
-export const config = {
-  api: {
-    bodyParser: true  // 啟用內建 bodyParser，支援 JSON
-  }
-};
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
 
-  const body = req.body;
+  const { name, phone } = req.body;
 
-  // 安全檢查，列出收到的 body
-  const { name, phone, birthday } = body || {};
-
-  // 加上主動印出回傳的 body，供除錯
-  if (!name || !phone || !birthday) {
-    return res.status(400).json({
-      success: false,
-      message: '資料不完整',
-      debug: { body } // 直接回傳 body 給你看是哪邊沒傳到
-    });
+  if (!name || !phone) {
+    return res.status(400).json({ success: false, message: '資料不完整' });
   }
 
-  // 成功回應
-  return res.status(200).json({
-    success: true,
-    message: '註冊成功',
-    data: { name, phone, birthday }
-  });
+  try {
+    // 🔁 替換為你的 Google Apps Script Web App URL（部署為公開網頁應用程式）
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyZtTVYfRxRBW4siOEsIX0xqSZJCbkC4ap00383E_pOUqgILvyzmqVlvzKG1-lwQxz_ZQ/exec';
+
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone })
+    });
+
+    const result = await response.json();
+    return res.status(200).json(result);
+
+  } catch (error) {
+    return res.status(500).json({ success: false, message: '伺服器錯誤：' + error.message });
+  }
 }
