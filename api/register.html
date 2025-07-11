@@ -40,9 +40,6 @@
       font-size: 1rem;
       cursor: pointer;
     }
-    button:disabled {
-      background-color: #aaa;
-    }
     .result {
       margin-top: 1rem;
       text-align: center;
@@ -54,46 +51,46 @@
   <h1>會員註冊</h1>
   <div class="form-group">
     <label for="name">姓名</label>
-    <input type="text" id="name" placeholder="請輸入姓名">
+    <input type="text" id="name" placeholder="請輸入姓名" />
   </div>
   <div class="form-group">
     <label for="phone">手機號碼</label>
-    <input type="tel" id="phone" placeholder="請輸入手機">
+    <input type="tel" id="phone" placeholder="請輸入手機" />
   </div>
   <div class="form-group">
     <label for="birthday">生日</label>
-    <input type="date" id="birthday">
+    <input type="date" id="birthday" />
   </div>
   <button id="registerBtn">送出註冊</button>
   <div class="result" id="result"></div>
 
   <script>
-    document.getElementById('registerBtn').addEventListener('click', async function () {
-      const name = document.getElementById('name').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const birthday = document.getElementById('birthday').value;
-      const result = document.getElementById('result');
+    document.getElementById("registerBtn").addEventListener("click", async function () {
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const birthday = document.getElementById("birthday").value;
+      const result = document.getElementById("result");
 
       if (!name || !phone || !birthday) {
-        result.textContent = '請完整填寫所有欄位';
+        result.textContent = "請完整填寫所有欄位";
         return;
       }
 
       try {
-        const res = await fetch('https://addpoint.vercel.app/api/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const res = await fetch("https://addpoint.vercel.app/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, phone, birthday })
         });
 
         const data = await res.json();
         if (data.success) {
-          result.textContent = '✅ 註冊成功！';
+          result.textContent = "✅ 註冊成功！";
         } else {
-          result.textContent = '❌ 註冊失敗：' + (data.message || '未知錯誤');
+          result.textContent = "❌ 註冊失敗：" + (data.message || "未知錯誤");
         }
       } catch (err) {
-        result.textContent = '❌ 發送失敗：' + err.message;
+        result.textContent = "❌ 發送失敗：" + err.message;
       }
     });
   </script>
