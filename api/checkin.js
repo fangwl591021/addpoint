@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
   try {
     // ✅ 轉送到你的 Google Apps Script Web App
-    const gasRes = await fetch('https://script.google.com/macros/s/AKfycbzBOVB7bUUeWfwfVkooIwt3iylG1IO3R2APZRVvjyX3ZLEyu16l6lHIaVuwfRM8TazCCA/exec', {
+    const gasRes = await fetch('https://script.google.com/macros/s/AKfycbzhsfweR4dFHjtbPJHj1QVHnhMBkp_YPR4cmBJrb9Dn8JltP9EVAPsEEDhs_VbfHf8PCg/exec', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(req.body)
