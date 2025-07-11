@@ -10,19 +10,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 🔁 替換為你的 Google Apps Script Web App URL（部署為公開網頁應用程式）
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyZtTVYfRxRBW4siOEsIX0xqSZJCbkC4ap00383E_pOUqgILvyzmqVlvzKG1-lwQxz_ZQ/exec';
-
-    const response = await fetch(GAS_URL, {
+    const response = await fetch('https://script.google.com/macros/s/AKfycbyZtTVYfRxRBW4siOEsIX0xqSZJCbkC4ap00383E_pOUqgILvyzmqVlvzKG1-lwQxz_ZQ/exec', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, phone })
     });
 
     const result = await response.json();
-    return res.status(200).json(result);
-
+    res.status(200).json(result);
   } catch (error) {
-    return res.status(500).json({ success: false, message: '伺服器錯誤：' + error.message });
+    res.status(500).json({ success: false, message: '轉送失敗：' + error.message });
   }
 }
