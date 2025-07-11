@@ -5,16 +5,20 @@ export default async function handler(req, res) {
 
   const { name, phone } = req.body;
 
+  // ✅ 確保這裡只有這兩個欄位
   if (!name || !phone) {
     return res.status(400).json({ success: false, message: '資料不完整' });
   }
 
   try {
-    const response = await fetch('https://script.google.com/macros/s/AKfycbx7C-GyhqLCZ5HAdjBwO0Ci54nygcyrqLBAtNvniZq3H8s0QrZ9Vrlp7Ymnn5grmAo_vw/exec', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, phone })
-    });
+    const response = await fetch(
+      'https://script.google.com/macros/s/AKfycbyZtTVYfRxRBW4siOEsIX0xqSZJCbkC4ap00383E_pOUqgILvyzmqVlvzKG1-lwQxz_ZQ/exec',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone })  // ❗ 僅這兩項
+      }
+    );
 
     const result = await response.json();
     res.status(200).json(result);
